@@ -23,6 +23,7 @@
  ***********************************************************************************/
 
 const CGFloat RPSlidingCellDragInterval = 180.0f;
+const CGFloat RPSlidingCellSpacing = -5.0f;
 
 #import "RPSlidingMenuLayout.h"
 #import "RPSlidingMenuCell.h"
@@ -74,19 +75,20 @@ const CGFloat RPSlidingCellDragInterval = 180.0f;
 
         if (indexPath.row == topFeatureIndex) {
             // our top feature cell
-            CGFloat yOffset = normalHeight  *topCellsInterpolation;
+            CGFloat yOffset = normalHeight * topCellsInterpolation;
+            yOffset += (RPSlidingCellSpacing * topCellsInterpolation);
             yValue = self.collectionView.contentOffset.y - yOffset;
             attributes.frame = CGRectMake(0.0f, yValue , screenWidth, featureHeight);
         } else if (indexPath.row == (topFeatureIndex + 1) && indexPath.row != numItems) {
             // the cell after the feature which grows into one as it goes up unless its the last cell (back to top)
-            yValue = lastRect.origin.y + lastRect.size.height;
+            yValue = lastRect.origin.y + lastRect.size.height + RPSlidingCellSpacing;
             CGFloat bottomYValue = yValue + normalHeight;
             CGFloat amountToGrow = MAX((featureHeight - normalHeight) *topCellsInterpolation, 0);
             NSInteger newHeight = normalHeight + amountToGrow;
             attributes.frame = CGRectMake(0.0f, bottomYValue - newHeight, screenWidth, newHeight);
         } else {
             // all other cells above or below those on screen
-            yValue = lastRect.origin.y + lastRect.size.height;
+            yValue = lastRect.origin.y + lastRect.size.height + RPSlidingCellSpacing;
             attributes.frame = CGRectMake(0.0f, yValue, screenWidth, normalHeight);
         }
 
@@ -145,7 +147,7 @@ const CGFloat RPSlidingCellDragInterval = 180.0f;
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity {
     
     CGFloat proposedPageIndex = roundf(proposedContentOffset.y / RPSlidingCellDragInterval);
-    CGFloat nearestPageOffset = proposedPageIndex * RPSlidingCellDragInterval;
+    CGFloat nearestPageOffset = proposedPageIndex * (RPSlidingCellDragInterval);
     
     return CGPointMake(0.0f, nearestPageOffset);
 }

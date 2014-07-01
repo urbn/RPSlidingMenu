@@ -24,8 +24,8 @@
 
 #import "RPSlidingMenuCell.h"
 
-const CGFloat RPSlidingCellFeatureHeight = 240.0f;
-const CGFloat RPSlidingCellCollapsedHeight = 88.0f;
+const CGFloat RPSlidingCellFeatureHeight = 285.0f;
+const CGFloat RPSlidingCellCollapsedHeight = 60.0f;
 const CGFloat RPSlidingCellDetailTextPadding = 20.0f;
 const CGFloat RPSlidingMenuNormalImageCoverAlpha = 0.5f;
 const CGFloat RPSlidingMenuFeaturedImageCoverAlpha = 0.2f;
@@ -59,11 +59,10 @@ const CGFloat RPSlidingMenuFeaturedImageCoverAlpha = 0.2f;
 - (void)setupTextLabel {
 
     CGRect screenRect = [[UIScreen mainScreen] bounds];
-    self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, screenRect.size.width, self.contentView.frame.size.height)];
-    self.textLabel.center = self.contentView.center;
+    self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, screenRect.size.width, 60)];
     self.textLabel.font = [UIFont boldSystemFontOfSize:32.0];
     self.textLabel.textColor = [UIColor whiteColor];
-    self.textLabel.textAlignment = NSTextAlignmentCenter;
+    self.textLabel.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:self.textLabel];
 }
 
@@ -87,9 +86,9 @@ const CGFloat RPSlidingMenuFeaturedImageCoverAlpha = 0.2f;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, screenRect.size.width, RPSlidingCellFeatureHeight)];
     self.backgroundImageView.clipsToBounds = YES;
-    self.backgroundImageView.center = self.contentView.center;
+//    self.backgroundImageView.center = self.contentView.center;
     self.backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+//    self.backgroundImageView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 
     // add a cover that we can fade in a black tint
     self.imageCover = [[UIView alloc] initWithFrame:self.backgroundImageView.frame];
@@ -115,14 +114,14 @@ const CGFloat RPSlidingMenuFeaturedImageCoverAlpha = 0.2f;
     // percent of growth from normal to feature
     CGFloat percentOfGrowth = 1 - (amountGrown / featureNormaHeightDifference);
     
-    //Curve the percent so that the animations move smoother
+    //Curve the per cent so that the animations move smoother
     percentOfGrowth = sin(percentOfGrowth * M_PI_2);
     
     CGFloat scaleAndAlpha = MAX(percentOfGrowth, 0.5f);
 
     // scale title as it collapses but keep origin x the same and the y location proportional to view height.  Also fade in alpha
-    self.textLabel.transform = CGAffineTransformMakeScale(scaleAndAlpha, scaleAndAlpha);
-    self.textLabel.center = self.contentView.center;
+//    self.textLabel.transform = CGAffineTransformMakeScale(scaleAndAlpha, scaleAndAlpha);
+//    self.textLabel.center = self.contentView.center;
 
     // keep detail just under text label
     self.detailTextLabel.center = CGPointMake(self.center.x, self.textLabel.center.y + 40.0f);
