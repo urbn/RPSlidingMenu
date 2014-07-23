@@ -78,7 +78,8 @@ const CGFloat RPSlidingCellSpacing = -5.0f;
             CGFloat yOffset = normalHeight * topCellsInterpolation;
             yOffset += (RPSlidingCellSpacing * topCellsInterpolation);
             yValue = self.collectionView.contentOffset.y - yOffset;
-            attributes.frame = CGRectMake(0.0f, yValue , screenWidth, featureHeight);
+            yValue += self.collectionView.contentInset.top;
+            attributes.frame = CGRectMake(0.0f, yValue, screenWidth, featureHeight);
         } else if (indexPath.row == (topFeatureIndex + 1) && indexPath.row != numItems) {
             // the cell after the feature which grows into one as it goes up unless its the last cell (back to top)
             yValue = lastRect.origin.y + lastRect.size.height + RPSlidingCellSpacing;
@@ -86,6 +87,9 @@ const CGFloat RPSlidingCellSpacing = -5.0f;
             CGFloat amountToGrow = MAX((featureHeight - normalHeight) *topCellsInterpolation, 0);
             NSInteger newHeight = normalHeight + amountToGrow;
             attributes.frame = CGRectMake(0.0f, bottomYValue - newHeight, screenWidth, newHeight);
+        } else if (indexPath.row == (topFeatureIndex - 1)) {
+            CGFloat yOffset = self.collectionView.contentOffset.y - normalHeight - RPSlidingCellSpacing + self.collectionView.contentInset.top;
+            attributes.frame = CGRectMake(0.0f, yOffset, screenWidth, featureHeight);
         } else {
             // all other cells above or below those on screen
             yValue = lastRect.origin.y + lastRect.size.height + RPSlidingCellSpacing;
@@ -149,6 +153,14 @@ const CGFloat RPSlidingCellSpacing = -5.0f;
     CGFloat proposedPageIndex = roundf(proposedContentOffset.y / RPSlidingCellDragInterval);
     CGFloat nearestPageOffset = proposedPageIndex * (RPSlidingCellDragInterval);
     
+    // HACK: For some reason when we scroll below contentOffset.y = 0 and release
+    // the scrollView, it doesn't settle at the proper place even though we tell it to.
+    // Manually adjusting the offset fixes the issue, but this appears to be some sort of bug.
+    // (prepareLayout creates the same attributes regardless, so I don't think that's the problem).
+    if (self.collectionView.contentOffset.y < 0) {
+        nearestPageOffset -= self.collectionView.contentInset.top;
+    }
+
     return CGPointMake(0.0f, nearestPageOffset);
 }
 
